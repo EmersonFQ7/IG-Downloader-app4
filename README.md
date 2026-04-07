@@ -1,56 +1,42 @@
 # 🐳 Instagram Video Downloader - Docker Practice
 
-Este proyecto permite descargar Reels y videos de Instagram mediante una interfaz web, utilizando contenedores Docker optimizados para minimizar el peso y garantizar la persistencia de los archivos.
+Este proyecto es una aplicación web desarrollada con **Flask** y **yt-dlp** que permite descargar Reels y videos de Instagram. El objetivo es demostrar el uso de imágenes optimizadas y la persistencia de datos mediante volúmenes en Docker.
 
----
+## 🚀 Guía de Inicio Rápido
 
-## 🚀 Pasos para la Instalación y Uso
-
-Sigue estos pasos en orden desde tu terminal (PowerShell o Bash):
+Sigue estos pasos para clonar y ejecutar el proyecto en tu máquina local:
 
 ### 1. Clonar el repositorio
-Primero, obtén una copia local del proyecto:
+Abre una terminal y ejecuta:
 ```bash
-git clone <URL_DE_TU_REPOSITORIO>
-cd SEM4-EVA1
-2. Preparar la carpeta de descargas
-Crea el directorio donde se guardarán los videos físicamente en tu PC. Esto asegura que los archivos no se borren si detienes el contenedor:
-
-En PowerShell:
+git clone [https://github.com/EmersonFQ7/IG-Downloader-app4.git](https://github.com/EmersonFQ7/IG-Downloader-app4.git)
+cd IG-Downloader-app4
+2. Preparar el entorno de descargas
+Crea la carpeta local donde se sincronizarán los videos descargados desde el contenedor:
 
 PowerShell
 mkdir descargas_ig
 3. Construir la imagen (Build)
-Elige una de las tres versiones disponibles según el nivel de optimización que desees probar (se recomienda la Opción C):
+Puedes elegir entre tres niveles de optimización. Se recomienda la Opción C por ser la más ligera:
 
-Opción A (Básica - Debian):
+Opción A (Básica): docker build -t ig-v1 -f Dockerfile .
 
-Bash
-docker build -t ig-v1 -f Dockerfile .
-Opción B (Optimizada - Alpine):
+Opción B (Optimizada): docker build -t ig-v2 -f Dockerfile.optimizado .
 
-Bash
-docker build -t ig-v2 -f Dockerfile.optimizado .
-Opción C (Profesional - Multi-stage):
+Opción C (Profesional): docker build -t ig-v3 -f Dockerfile.multistage .
 
-Bash
-docker build -t ig-v3 -f Dockerfile.multistage .
 4. Ejecutar el contenedor (Run)
-Lanza la aplicación vinculando el puerto y la carpeta de descargas (ejemplo con la versión ig-v3):
+Lanza la aplicación vinculando el puerto 5000 y la carpeta de persistencia:
 
-Nota: Si usas CMD, cambia ${PWD} por %cd%. En PowerShell úsalo tal cual.
-
-En PowerShell:
+Nota: Si usas CMD, cambia ${PWD} por %cd%. En PowerShell funciona tal cual:
 
 PowerShell
 docker run -d -p 5000:5000 --name app-instagram -v ${PWD}/descargas_ig:/app/downloads ig-v3
-🖥️ Cómo usar la aplicación
-Abrir la Web: Una vez que el contenedor esté corriendo, abre tu navegador y entra a: http://localhost:5000
+5. Acceso a la aplicación
+Abre tu navegador en: http://localhost:5000
 
-Pegar Link: Copia la URL de un video de Instagram y pégala en el cuadro de texto.
+Pega el enlace del video de Instagram.
 
-Descargar: Haz clic en el botón "Descargar".
+Haz clic en Descargar.
 
-Ver resultados: * El video aparecerá en la lista de la página web para descarga directa.
-
-También lo encontrarás físicamente en la carpeta descargas_ig de tu PC.
+El video se guardará automáticamente en tu carpeta local descargas_ig.
