@@ -1,0 +1,23 @@
+# ETAPA 1: Construcción (Builder)
+FROM python:3.11-alpine AS builder
+WORKDIR /build
+RUN apk add --no-cache gcc musl-dev libffi-dev
+COPY requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# ETAPA 2: Ejecución (Final)
+FROM python:3.11-alpine
+WORKDIR /app
+
+# Copiamos solo lo necesario de la etapa anterior
+COPY --from=builder /root/.local /root/.local
+COPY . .
+
+# Instalamos ffmpeg para el funcionamiento final
+RUN apk add --no-cache ffmpeg
+
+# Configuramos la ruta para encontrar las librerías instaladas
+ENV PATH=/root/.local/bin:$PATH
+
+EXPOSE 5000
+CMD ["python", "app.py"]

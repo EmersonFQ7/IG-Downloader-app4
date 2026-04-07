@@ -1,0 +1,18 @@
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+# Alpine usa 'apk'. Instalamos dependencias de sistema
+RUN apk add --no-cache ffmpeg gcc musl-dev python3-dev libffi-dev
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Seguridad: Usuario no-root
+RUN adduser -D iguser && chown -R iguser /app
+USER iguser
+
+EXPOSE 5000
+CMD ["python", "app.py"]

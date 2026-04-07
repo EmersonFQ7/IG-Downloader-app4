@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>IG Downloader Docker</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #fafafa; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { width: 80%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; background: #E1306C; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #video-list { margin-top: 30px; text-align: left; }
+        .video-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        a { color: #0095f6; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 IG Downloader</h1>
+        <input type="text" id="url" placeholder="Pega el link de Instagram aquí">
+        <button onclick="download()">Descargar</button>
+        <p id="status"></p>
+
+        <div id="video-list">
+            <h3>Videos Descargados:</h3>
+            <div id="list-container"></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadVideos() {
+            const res = await fetch('/list-videos');
+            const videos = await res.json();
+            const container = document.getElementById('list-container');
+            container.innerHTML = videos.map(v => 
+                `<div class="video-item">
+                    <span>${v}</span>
+                    <a href="/videos/${v}" download>⬇️ Guardar</a>
+                </div>`
+            ).join('');
+        }
+
+        async function download() {
+            const url = document.getElementById('url').value;
+            const status = document.getElementById('status');
+            status.innerText = "Descargando... (revisa los logs de Docker)";
+            
+            const res = await fetch('/download-ig', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({url})
+            });
+            
+            if(res.ok) {
+                status.innerText = "¡Listo!";
+                loadVideos();
+            } else {
+                status.innerText = "Error en la descarga";
+            }
+        }
+        // Cargar lista al iniciar
+        loadVideos();
+    </script>
+</body>
+</html>
